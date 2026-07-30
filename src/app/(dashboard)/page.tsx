@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { SITES } from "@/lib/data";
 import { formatNumber, COLORS, cn } from "@/lib/utils";
-import { Card, CardTitle, CardValue, CardLabel } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { TimeFilter } from "@/components/TimeFilter";
+import { AIAnalysis } from "@/components/AIAnalysis";
+import { getPeriodData, PeriodId, getWeekLabel } from "@/lib/weekly-data";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, LineChart, Line,
 } from "recharts";
 import {
-  Globe, Award, MousePointerClick, Bot, TrendingUp, TrendingDown, MapPin, Activity, Zap, ExternalLink,
+  Globe, Award, MousePointerClick, Bot, TrendingUp, TrendingDown, Activity,
 } from "lucide-react";
 
 function KPICard({ icon: Icon, label, value, sub, color, delay }: {
@@ -32,20 +35,33 @@ function KPICard({ icon: Icon, label, value, sub, color, delay }: {
 }
 
 export default function OverviewPage() {
-  const info = SITES[0];
-  const totalVisits = SITES.reduce((a, s) => a + s.visits, 0);
+  const [period, setPeriod] = useState<PeriodId>("month");
+
+  const isWeekly = period !== "month";
+  const totalVisits = isWeekly
+    ? SITES.reduce((a, s) => a + (getPeriodData(s.id, period)?.visits || 0), 0)
+    : SITES.reduce((a, s) => a + s.visits, 0);
   const avgAS = Math.round(SITES.reduce((a, s) => a + s.authorityScore, 0) / SITES.length);
   const lowestBounce = SITES.reduce((best, s) => s.bounceRate < best.bounceRate ? s : best, SITES[0]);
   const totalAiTraffic = SITES.reduce((a, s) => a + s.aiTraffic, 0);
 
-  const trafficData = SITES.map((s) => ({
+  const trafficData = (isWeekly ? SITES.map((s) => {
+    const wd = getPeriodData(s.id, period);
+    return {
+      name: s.id.toUpperCase(), label: s.name,
+      visits: wd ? Math.round(wd.visits / 1000) : Math.round(s.visits / 1000),
+      fill: s.color,
+    };
+  }) : SITES.map((s) => ({
     name: s.id.toUpperCase(), label: s.name, visits: Math.round(s.visits / 1000), fill: s.color,
-  }));
+  })));
 
   const trendData = SITES[0].monthlyVisits.map((m, i) => ({
     month: m.month,
     ...Object.fromEntries(SITES.map(s => [s.id, s.monthlyVisits[i].value])),
   }));
+
+  const periodLabel = isWeekly ? `Haftalık · ${getWeekLabel(period)}` : "Aylık · Haziran 2026";
 
   return (
     <div className="p-6 space-y-6">
@@ -54,11 +70,13 @@ export default function OverviewPage() {
           <h1 className="text-2xl font-bold text-white tracking-tight">Genel Bakış</h1>
           <Badge variant="success">Canlı</Badge>
         </div>
-        <p className="text-sm text-zinc-500">Aracı kurum SEO performansı &middot; Haziran 2026</p>
+        <p className="text-sm text-zinc-500">Aracı kurum SEO performansı &middot; {periodLabel}</p>
       </div>
 
+      <TimeFilter selected={period} onChange={setPeriod} />
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <KPICard icon={Globe} label="Toplam Pazar Trafiği" value={formatNumber(totalVisits)} sub={`${SITES.length} site toplam aylık ziyaret`} color={COLORS.info} delay={100} />
+        <KPICard icon={Globe} label={isWeekly ? "Haftalık Pazar Trafiği" : "Toplam Pazar Trafiği"} value={formatNumber(totalVisits)} sub={`${SITES.length} site ${isWeekly ? "haftalık" : "toplam aylık"} ziyaret`} color={COLORS.info} delay={100} />
         <KPICard icon={Award} label="Ortalama Authority Score" value={String(avgAS)} sub="Sektör ortalaması" color={COLORS.isy} delay={200} />
         <KPICard icon={MousePointerClick} label="En Düşük Hemen Çıkma" value={`%${lowestBounce.bounceRate}`} sub={`${lowestBounce.name} ile sektör lideri`} color={lowestBounce.color} delay={300} />
         <KPICard icon={Bot} label="Toplam AI Trafik" value={totalAiTraffic.toLocaleString()} sub="Tüm siteler toplamı" color={COLORS.gcm} delay={400} />
@@ -180,6 +198,8 @@ export default function OverviewPage() {
           </div>
         </Card>
       </div>
+
+      <AIAnalysis period={period} />
 
       <Card>
         <div className="flex items-center justify-between mb-4">
