@@ -1,3 +1,15 @@
+export interface PageDetail {
+  path: string;
+  traffic: number;
+  share: string;
+  bounceRate: number;
+  avgDuration: string;
+  avgDurationSec: number;
+  pagesPerVisit: number;
+  trend: "up" | "down" | "stable";
+  category: string;
+}
+
 export interface SiteData {
   id: string;
   name: string;
@@ -24,6 +36,7 @@ export interface SiteData {
   keywords: { rank: number; keyword: string; position: number; volume: number; trafficShare: string }[];
   monthlyVisits: { month: string; value: number }[];
   topPages: { path: string; traffic: number; share: string }[];
+  pageDetails: PageDetail[];
 }
 
 export const SITES: SiteData[] = [
@@ -66,6 +79,16 @@ export const SITES: SiteData[] = [
       { path: "/canli-borsa", traffic: 24734, share: "%5.25" },
       { path: "/sermaye-artirimi", traffic: 13524, share: "%2.87" },
     ],
+    pageDetails: [
+      { path: "/halka-arz-takvimi", traffic: 58568, share: "%12.43", bounceRate: 72, avgDuration: "1dk 20sn", avgDurationSec: 80, pagesPerVisit: 1.2, trend: "stable", category: "araç" },
+      { path: "/canli-borsa", traffic: 24734, share: "%5.25", bounceRate: 65, avgDuration: "3dk 45sn", avgDurationSec: 225, pagesPerVisit: 2.8, trend: "up", category: "araç" },
+      { path: "/sermaye-artirimi", traffic: 13524, share: "%2.87", bounceRate: 35, avgDuration: "4dk 12sn", avgDurationSec: 252, pagesPerVisit: 4.5, trend: "stable", category: "içerik" },
+      { path: "/endeks/bist-100", traffic: 8500, share: "%1.80", bounceRate: 48, avgDuration: "5dk 10sn", avgDurationSec: 310, pagesPerVisit: 3.2, trend: "up", category: "veri" },
+      { path: "/hisse/sasa", traffic: 6400, share: "%1.36", bounceRate: 42, avgDuration: "6dk 30sn", avgDurationSec: 390, pagesPerVisit: 3.8, trend: "stable", category: "hisse" },
+      { path: "/altin-fiyatlari", traffic: 5200, share: "%1.10", bounceRate: 58, avgDuration: "2dk 30sn", avgDurationSec: 150, pagesPerVisit: 1.8, trend: "up", category: "veri" },
+      { path: "/hisse/aselsan", traffic: 4100, share: "%0.87", bounceRate: 38, avgDuration: "7dk 15sn", avgDurationSec: 435, pagesPerVisit: 4.2, trend: "stable", category: "hisse" },
+      { path: "/blog/2026-yatirim-stratejisi", traffic: 2800, share: "%0.59", bounceRate: 28, avgDuration: "8dk 45sn", avgDurationSec: 525, pagesPerVisit: 5.5, trend: "stable", category: "blog" },
+    ],
   },
   {
     id: "gcm",
@@ -106,6 +129,7 @@ export const SITES: SiteData[] = [
       { path: "/altin/ceyrek-altin", traffic: 96882, share: "%4.82" },
       { path: "/altin", traffic: 74973, share: "%3.73" },
     ],
+    pageDetails: [],
   },
   {
     id: "isy",
@@ -146,6 +170,7 @@ export const SITES: SiteData[] = [
       { path: "/endeks/bist-100", traffic: 6858, share: "%1.98" },
       { path: "/hisse/aselsan", traffic: 6098, share: "%1.76" },
     ],
+    pageDetails: [],
   },
   {
     id: "ged",
@@ -186,6 +211,7 @@ export const SITES: SiteData[] = [
       { path: "/kurumsal", traffic: 6778, share: "%2.21" },
       { path: "/yatirim/altin", traffic: 4633, share: "%1.51" },
     ],
+    pageDetails: [],
   },
   {
     id: "midas",
@@ -226,6 +252,7 @@ export const SITES: SiteData[] = [
       { path: "/borsa-istanbul", traffic: 93600, share: "%5.20" },
       { path: "/hisse-senedi", traffic: 63000, share: "%3.50" },
     ],
+    pageDetails: [],
   },
   {
     id: "a1c",
@@ -266,6 +293,7 @@ export const SITES: SiteData[] = [
       { path: "/borsa", traffic: 4060, share: "%2.80" },
       { path: "/halka-arz", traffic: 2174, share: "%1.50" },
     ],
+    pageDetails: [],
   },
   {
     id: "tera",
@@ -306,6 +334,7 @@ export const SITES: SiteData[] = [
       { path: "/canli-borsa", traffic: 4282, share: "%8.20" },
       { path: "/hisse", traffic: 1828, share: "%3.50" },
     ],
+    pageDetails: [],
   },
   {
     id: "osm",
@@ -346,6 +375,7 @@ export const SITES: SiteData[] = [
       { path: "/borsa", traffic: 8981, share: "%3.80" },
       { path: "/altin", traffic: 5909, share: "%2.50" },
     ],
+    pageDetails: [],
   },
   {
     id: "unlu",
@@ -386,6 +416,7 @@ export const SITES: SiteData[] = [
       { path: "/", traffic: 4375, share: "%12.50" },
       { path: "/hisse", traffic: 1330, share: "%3.80" },
     ],
+    pageDetails: [],
   },
   {
     id: "mrb",
@@ -426,6 +457,7 @@ export const SITES: SiteData[] = [
       { path: "/fon", traffic: 9049, share: "%11.15" },
       { path: "/ekdmr", traffic: 5270, share: "%6.50" },
     ],
+    pageDetails: [],
   },
   {
     id: "pus",
@@ -466,6 +498,7 @@ export const SITES: SiteData[] = [
       { path: "/borsa", traffic: 224, share: "%2.80" },
       { path: "/iletisim", traffic: 120, share: "%1.50" },
     ],
+    pageDetails: [],
   },
 ];
 
