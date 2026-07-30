@@ -129,7 +129,13 @@ export const SITES: SiteData[] = [
       { path: "/altin/ceyrek-altin", traffic: 96882, share: "%4.82" },
       { path: "/altin", traffic: 74973, share: "%3.73" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/altin/tam-altin-fiyati", traffic: 177282, share: "%8.82", bounceRate: 94, avgDuration: "45sn", avgDurationSec: 45, pagesPerVisit: 1.1, trend: "stable", category: "veri" },
+      { path: "/altin/ceyrek-altin", traffic: 96882, share: "%4.82", bounceRate: 93, avgDuration: "40sn", avgDurationSec: 40, pagesPerVisit: 1.1, trend: "stable", category: "veri" },
+      { path: "/altin", traffic: 74973, share: "%3.73", bounceRate: 89, avgDuration: "1dk 10sn", avgDurationSec: 70, pagesPerVisit: 1.3, trend: "up", category: "veri" },
+      { path: "/yatirim", traffic: 30000, share: "%1.49", bounceRate: 75, avgDuration: "2dk 30sn", avgDurationSec: 150, pagesPerVisit: 2.0, trend: "down", category: "içerik" },
+      { path: "/doviz", traffic: 25000, share: "%1.24", bounceRate: 88, avgDuration: "1dk 00sn", avgDurationSec: 60, pagesPerVisit: 1.2, trend: "stable", category: "veri" },
+    ],
   },
   {
     id: "isy",
@@ -170,7 +176,13 @@ export const SITES: SiteData[] = [
       { path: "/endeks/bist-100", traffic: 6858, share: "%1.98" },
       { path: "/hisse/aselsan", traffic: 6098, share: "%1.76" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/hisse/sasa", traffic: 25568, share: "%7.38", bounceRate: 45, avgDuration: "5dk 30sn", avgDurationSec: 330, pagesPerVisit: 3.5, trend: "stable", category: "hisse" },
+      { path: "/endeks/bist-100", traffic: 6858, share: "%1.98", bounceRate: 50, avgDuration: "4dk 00sn", avgDurationSec: 240, pagesPerVisit: 2.8, trend: "up", category: "veri" },
+      { path: "/hisse/aselsan", traffic: 6098, share: "%1.76", bounceRate: 42, avgDuration: "6dk 15sn", avgDurationSec: 375, pagesPerVisit: 3.8, trend: "stable", category: "hisse" },
+      { path: "/hisse/tupra", traffic: 4500, share: "%1.30", bounceRate: 44, avgDuration: "5dk 45sn", avgDurationSec: 345, pagesPerVisit: 3.2, trend: "stable", category: "hisse" },
+      { path: "/arastirma", traffic: 3200, share: "%0.92", bounceRate: 38, avgDuration: "7dk 20sn", avgDurationSec: 440, pagesPerVisit: 4.5, trend: "up", category: "içerik" },
+    ],
   },
   {
     id: "ged",
@@ -211,7 +223,13 @@ export const SITES: SiteData[] = [
       { path: "/kurumsal", traffic: 6778, share: "%2.21" },
       { path: "/yatirim/altin", traffic: 4633, share: "%1.51" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/yatirim/altin/ons-altin", traffic: 42866, share: "%13.97", bounceRate: 55, avgDuration: "3dk 20sn", avgDurationSec: 200, pagesPerVisit: 2.2, trend: "stable", category: "veri" },
+      { path: "/kurumsal", traffic: 6778, share: "%2.21", bounceRate: 60, avgDuration: "2dk 45sn", avgDurationSec: 165, pagesPerVisit: 2.5, trend: "stable", category: "kurumsal" },
+      { path: "/yatirim/altin", traffic: 4633, share: "%1.51", bounceRate: 52, avgDuration: "3dk 50sn", avgDurationSec: 230, pagesPerVisit: 2.8, trend: "stable", category: "veri" },
+      { path: "/yatirim", traffic: 3500, share: "%1.14", bounceRate: 48, avgDuration: "4dk 30sn", avgDurationSec: 270, pagesPerVisit: 3.0, trend: "up", category: "içerik" },
+      { path: "/doviz", traffic: 2800, share: "%0.91", bounceRate: 58, avgDuration: "2dk 15sn", avgDurationSec: 135, pagesPerVisit: 1.8, trend: "down", category: "veri" },
+    ],
   },
   {
     id: "midas",
@@ -252,7 +270,13 @@ export const SITES: SiteData[] = [
       { path: "/borsa-istanbul", traffic: 93600, share: "%5.20" },
       { path: "/hisse-senedi", traffic: 63000, share: "%3.50" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/bist-100", traffic: 196800, share: "%10.93", bounceRate: 70, avgDuration: "2dk 10sn", avgDurationSec: 130, pagesPerVisit: 1.8, trend: "up", category: "veri" },
+      { path: "/borsa-istanbul", traffic: 93600, share: "%5.20", bounceRate: 68, avgDuration: "2dk 30sn", avgDurationSec: 150, pagesPerVisit: 2.0, trend: "up", category: "veri" },
+      { path: "/hisse-senedi", traffic: 63000, share: "%3.50", bounceRate: 65, avgDuration: "3dk 00sn", avgDurationSec: 180, pagesPerVisit: 2.2, trend: "stable", category: "içerik" },
+      { path: "/canli-borsa", traffic: 45000, share: "%2.50", bounceRate: 72, avgDuration: "4dk 30sn", avgDurationSec: 270, pagesPerVisit: 3.5, trend: "up", category: "araç" },
+      { path: "/kredi", traffic: 30000, share: "%1.67", bounceRate: 60, avgDuration: "3dk 45sn", avgDurationSec: 225, pagesPerVisit: 2.5, trend: "up", category: "finans" },
+    ],
   },
   {
     id: "a1c",
@@ -293,7 +317,13 @@ export const SITES: SiteData[] = [
       { path: "/borsa", traffic: 4060, share: "%2.80" },
       { path: "/halka-arz", traffic: 2174, share: "%1.50" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/", traffic: 8100, share: "%5.59", bounceRate: 78, avgDuration: "1dk 30sn", avgDurationSec: 90, pagesPerVisit: 1.5, trend: "down", category: "ana sayfa" },
+      { path: "/borsa", traffic: 4060, share: "%2.80", bounceRate: 75, avgDuration: "2dk 00sn", avgDurationSec: 120, pagesPerVisit: 1.8, trend: "stable", category: "veri" },
+      { path: "/halka-arz", traffic: 2174, share: "%1.50", bounceRate: 65, avgDuration: "3dk 15sn", avgDurationSec: 195, pagesPerVisit: 2.5, trend: "stable", category: "içerik" },
+      { path: "/arastirma", traffic: 1500, share: "%1.03", bounceRate: 55, avgDuration: "4dk 30sn", avgDurationSec: 270, pagesPerVisit: 3.2, trend: "up", category: "içerik" },
+      { path: "/kurumsal", traffic: 1200, share: "%0.83", bounceRate: 70, avgDuration: "2dk 15sn", avgDurationSec: 135, pagesPerVisit: 2.0, trend: "stable", category: "kurumsal" },
+    ],
   },
   {
     id: "tera",
@@ -334,7 +364,13 @@ export const SITES: SiteData[] = [
       { path: "/canli-borsa", traffic: 4282, share: "%8.20" },
       { path: "/hisse", traffic: 1828, share: "%3.50" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/", traffic: 33100, share: "%63.39", bounceRate: 28, avgDuration: "2dk 45sn", avgDurationSec: 165, pagesPerVisit: 4.0, trend: "up", category: "ana sayfa" },
+      { path: "/canli-borsa", traffic: 4282, share: "%8.20", bounceRate: 35, avgDuration: "4dk 15sn", avgDurationSec: 255, pagesPerVisit: 3.5, trend: "up", category: "araç" },
+      { path: "/hisse", traffic: 1828, share: "%3.50", bounceRate: 30, avgDuration: "5dk 30sn", avgDurationSec: 330, pagesPerVisit: 4.2, trend: "stable", category: "içerik" },
+      { path: "/arastirma", traffic: 1200, share: "%2.30", bounceRate: 25, avgDuration: "7dk 00sn", avgDurationSec: 420, pagesPerVisit: 5.0, trend: "up", category: "içerik" },
+      { path: "/iletisim", traffic: 800, share: "%1.53", bounceRate: 50, avgDuration: "1dk 30sn", avgDurationSec: 90, pagesPerVisit: 1.5, trend: "stable", category: "kurumsal" },
+    ],
   },
   {
     id: "osm",
@@ -375,7 +411,13 @@ export const SITES: SiteData[] = [
       { path: "/borsa", traffic: 8981, share: "%3.80" },
       { path: "/altin", traffic: 5909, share: "%2.50" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/", traffic: 10636, share: "%4.50", bounceRate: 62, avgDuration: "2dk 30sn", avgDurationSec: 150, pagesPerVisit: 2.2, trend: "stable", category: "ana sayfa" },
+      { path: "/borsa", traffic: 8981, share: "%3.80", bounceRate: 60, avgDuration: "2dk 45sn", avgDurationSec: 165, pagesPerVisit: 2.5, trend: "stable", category: "veri" },
+      { path: "/altin", traffic: 5909, share: "%2.50", bounceRate: 65, avgDuration: "2dk 00sn", avgDurationSec: 120, pagesPerVisit: 1.8, trend: "up", category: "veri" },
+      { path: "/hisse", traffic: 3500, share: "%1.48", bounceRate: 55, avgDuration: "3dk 30sn", avgDurationSec: 210, pagesPerVisit: 2.8, trend: "stable", category: "hisse" },
+      { path: "/kurumsal", traffic: 2000, share: "%0.85", bounceRate: 58, avgDuration: "2dk 15sn", avgDurationSec: 135, pagesPerVisit: 2.0, trend: "stable", category: "kurumsal" },
+    ],
   },
   {
     id: "unlu",
@@ -416,7 +458,13 @@ export const SITES: SiteData[] = [
       { path: "/", traffic: 4375, share: "%12.50" },
       { path: "/hisse", traffic: 1330, share: "%3.80" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/temettu", traffic: 8100, share: "%23.14", bounceRate: 60, avgDuration: "3dk 00sn", avgDurationSec: 180, pagesPerVisit: 2.5, trend: "stable", category: "içerik" },
+      { path: "/", traffic: 4375, share: "%12.50", bounceRate: 68, avgDuration: "1dk 45sn", avgDurationSec: 105, pagesPerVisit: 1.8, trend: "stable", category: "ana sayfa" },
+      { path: "/hisse", traffic: 1330, share: "%3.80", bounceRate: 55, avgDuration: "4dk 00sn", avgDurationSec: 240, pagesPerVisit: 3.0, trend: "stable", category: "hisse" },
+      { path: "/arastirma", traffic: 900, share: "%2.57", bounceRate: 45, avgDuration: "5dk 30sn", avgDurationSec: 330, pagesPerVisit: 3.8, trend: "up", category: "içerik" },
+      { path: "/kurumsal", traffic: 600, share: "%1.71", bounceRate: 62, avgDuration: "2dk 00sn", avgDurationSec: 120, pagesPerVisit: 2.0, trend: "stable", category: "kurumsal" },
+    ],
   },
   {
     id: "mrb",
@@ -457,7 +505,13 @@ export const SITES: SiteData[] = [
       { path: "/fon", traffic: 9049, share: "%11.15" },
       { path: "/ekdmr", traffic: 5270, share: "%6.50" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/", traffic: 16030, share: "%19.76", bounceRate: 58, avgDuration: "1dk 20sn", avgDurationSec: 80, pagesPerVisit: 1.6, trend: "down", category: "ana sayfa" },
+      { path: "/fon", traffic: 9049, share: "%11.15", bounceRate: 52, avgDuration: "2dk 15sn", avgDurationSec: 135, pagesPerVisit: 2.0, trend: "stable", category: "fon" },
+      { path: "/ekdmr", traffic: 5270, share: "%6.50", bounceRate: 48, avgDuration: "2dk 45sn", avgDurationSec: 165, pagesPerVisit: 2.3, trend: "up", category: "hisse" },
+      { path: "/hisse", traffic: 1500, share: "%1.85", bounceRate: 55, avgDuration: "3dk 00sn", avgDurationSec: 180, pagesPerVisit: 2.5, trend: "stable", category: "hisse" },
+      { path: "/kurumsal", traffic: 1000, share: "%1.23", bounceRate: 60, avgDuration: "1dk 45sn", avgDurationSec: 105, pagesPerVisit: 1.8, trend: "stable", category: "kurumsal" },
+    ],
   },
   {
     id: "pus",
@@ -498,7 +552,13 @@ export const SITES: SiteData[] = [
       { path: "/borsa", traffic: 224, share: "%2.80" },
       { path: "/iletisim", traffic: 120, share: "%1.50" },
     ],
-    pageDetails: [],
+    pageDetails: [
+      { path: "/", traffic: 680, share: "%8.50", bounceRate: 75, avgDuration: "45sn", avgDurationSec: 45, pagesPerVisit: 1.3, trend: "stable", category: "ana sayfa" },
+      { path: "/borsa", traffic: 224, share: "%2.80", bounceRate: 72, avgDuration: "1dk 00sn", avgDurationSec: 60, pagesPerVisit: 1.5, trend: "stable", category: "veri" },
+      { path: "/iletisim", traffic: 120, share: "%1.50", bounceRate: 70, avgDuration: "30sn", avgDurationSec: 30, pagesPerVisit: 1.2, trend: "stable", category: "kurumsal" },
+      { path: "/kurumsal", traffic: 80, share: "%1.00", bounceRate: 68, avgDuration: "1dk 30sn", avgDurationSec: 90, pagesPerVisit: 1.8, trend: "stable", category: "kurumsal" },
+      { path: "/hisse", traffic: 60, share: "%0.75", bounceRate: 65, avgDuration: "2dk 00sn", avgDurationSec: 120, pagesPerVisit: 2.0, trend: "stable", category: "hisse" },
+    ],
   },
 ];
 
