@@ -35,6 +35,8 @@ export default function OverviewPage() {
   const info = SITES[0];
   const totalVisits = SITES.reduce((a, s) => a + s.visits, 0);
   const avgAS = Math.round(SITES.reduce((a, s) => a + s.authorityScore, 0) / SITES.length);
+  const lowestBounce = SITES.reduce((best, s) => s.bounceRate < best.bounceRate ? s : best, SITES[0]);
+  const totalAiTraffic = SITES.reduce((a, s) => a + s.aiTraffic, 0);
 
   const trafficData = SITES.map((s) => ({
     name: s.id.toUpperCase(), label: s.name, visits: Math.round(s.visits / 1000), fill: s.color,
@@ -42,10 +44,7 @@ export default function OverviewPage() {
 
   const trendData = SITES[0].monthlyVisits.map((m, i) => ({
     month: m.month,
-    [SITES[0].id]: m.value,
-    [SITES[1].id]: SITES[1].monthlyVisits[i].value,
-    [SITES[2].id]: SITES[2].monthlyVisits[i].value,
-    [SITES[3].id]: SITES[3].monthlyVisits[i].value,
+    ...Object.fromEntries(SITES.map(s => [s.id, s.monthlyVisits[i].value])),
   }));
 
   return (
@@ -59,10 +58,10 @@ export default function OverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-        <KPICard icon={Globe} label="Toplam Pazar Trafiği" value={formatNumber(totalVisits)} sub="4 site toplam aylık ziyaret" color={COLORS.info} delay={100} />
+        <KPICard icon={Globe} label="Toplam Pazar Trafiği" value={formatNumber(totalVisits)} sub={`${SITES.length} site toplam aylık ziyaret`} color={COLORS.info} delay={100} />
         <KPICard icon={Award} label="Ortalama Authority Score" value={String(avgAS)} sub="Sektör ortalaması" color={COLORS.isy} delay={200} />
-        <KPICard icon={MousePointerClick} label="En Düşük Hemen Çıkma" value="%53.86" sub="gedik.com ile sektör lideri" color={COLORS.ged} delay={300} />
-        <KPICard icon={Bot} label="Toplam AI Trafik" value="1.728" sub="+%142 büyüme potansiyeli" color={COLORS.gcm} delay={400} />
+        <KPICard icon={MousePointerClick} label="En Düşük Hemen Çıkma" value={`%${lowestBounce.bounceRate}`} sub={`${lowestBounce.name} ile sektör lideri`} color={lowestBounce.color} delay={300} />
+        <KPICard icon={Bot} label="Toplam AI Trafik" value={totalAiTraffic.toLocaleString()} sub="Tüm siteler toplamı" color={COLORS.gcm} delay={400} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
@@ -187,7 +186,7 @@ export default function OverviewPage() {
           <CardTitle>Rakip Görünümü</CardTitle>
           <Badge variant="info">{SITES.length} site</Badge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {SITES.map((s, i) => (
             <div key={s.id} className="animate-fade-in rounded-lg border border-zinc-800 bg-zinc-900/40 p-4 text-center" style={{ animationDelay: `${i * 100}ms` }}>
               <div className="w-10 h-10 rounded-full mx-auto mb-3 flex items-center justify-center text-sm font-bold" style={{ backgroundColor: `${s.color}20`, color: s.color }}>

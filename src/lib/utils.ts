@@ -32,6 +32,13 @@ export const COLORS = {
   gcm: "#3b82f6",
   isy: "#a855f7",
   ged: "#22c55e",
+  midas: "#ef4444",
+  a1c: "#f97316",
+  tera: "#06b6d4",
+  osm: "#ec4899",
+  unlu: "#14b8a6",
+  mrb: "#eab308",
+  pus: "#6366f1",
 } as const;
 
 export const CHANNEL_COLORS: Record<string, string> = {

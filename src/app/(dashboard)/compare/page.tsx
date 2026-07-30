@@ -79,7 +79,7 @@ export default function ComparePage() {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Domain Karşılaştırma</h1>
-          <p className="text-sm text-zinc-500">4 aracı kurumun kapsamlı SEO karşılaştırması</p>
+          <p className="text-sm text-zinc-500">{SITES.length} aracı kurumun kapsamlı SEO karşılaştırması</p>
         </div>
       </div>
 
@@ -122,7 +122,7 @@ export default function ComparePage() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="grid grid-cols-4 gap-3 mt-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 mt-3">
             {SITES.map((s) => (
               <div key={s.id} className="text-center rounded-lg bg-zinc-800/40 p-2">
                 <div className="text-[10px] font-semibold" style={{ color: s.color }}>{s.id.toUpperCase()}</div>
