@@ -40,34 +40,30 @@ function KPICard({ icon: Icon, label, value, sub, color, delay }: {
   );
 }
 
+function getDefaultVisibility(): Record<string, boolean> {
+  const d: Record<string, boolean> = {};
+  WIDGETS.forEach(w => { d[w.id] = w.defaultVisible; });
+  return d;
+}
+
 export default function OverviewPage() {
   const [period, setPeriod] = useState<PeriodId>("month");
-  const [visibility, setVisibility] = useState<Record<string, boolean>>({});
-  const [mounted, setMounted] = useState(false);
+  const [visibility, setVisibility] = useState<Record<string, boolean>>(getDefaultVisibility());
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem("infoyatirim-widgets");
-      if (saved) {
-        setVisibility(JSON.parse(saved));
-      } else {
-        const defaults: Record<string, boolean> = {};
-        WIDGETS.forEach(w => { defaults[w.id] = w.defaultVisible; });
-        setVisibility(defaults);
-      }
-    } catch {
-      const defaults: Record<string, boolean> = {};
-      WIDGETS.forEach(w => { defaults[w.id] = w.defaultVisible; });
-      setVisibility(defaults);
-    }
-    setMounted(true);
+      if (saved) setVisibility({ ...getDefaultVisibility(), ...JSON.parse(saved) });
+    } catch { }
+    setReady(true);
   }, []);
 
   useEffect(() => {
-    if (mounted) localStorage.setItem("infoyatirim-widgets", JSON.stringify(visibility));
-  }, [visibility, mounted]);
+    if (ready) localStorage.setItem("infoyatirim-widgets", JSON.stringify(visibility));
+  }, [visibility, ready]);
 
-  const show = (id: string) => mounted && visibility[id] !== false;
+  const show = (id: string) => visibility[id] !== false;
 
   const isWeekly = period !== "month";
   const totalVisits = isWeekly
