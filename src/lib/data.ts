@@ -19,6 +19,8 @@ export interface SiteData {
   aiTraffic: number;
   channels: { direct: number; organic: number; referral: number; social: number; paid: number; mail: number };
   keywords: { rank: number; keyword: string; position: number; volume: number; trafficPct: string }[];
+  monthlyVisits: { month: string; value: number }[];
+  topPages: { page: string; traffic: number; pct: string }[];
 }
 
 export const sites: SiteData[] = [
@@ -47,6 +49,15 @@ export const sites: SiteData[] = [
       { rank: 4, keyword: "sasa hisse", position: 3, volume: 4090000, trafficPct: "%1.36" },
       { rank: 5, keyword: "ist: kchol", position: 8, volume: 60500, trafficPct: "%0.86" },
     ],
+    monthlyVisits: [
+      { month: "Oca", value: 180 }, { month: "Şub", value: 210 }, { month: "Mar", value: 260 },
+      { month: "Nis", value: 310 }, { month: "May", value: 380 }, { month: "Haz", value: 471 },
+    ],
+    topPages: [
+      { page: "/halka-arz-takvimi", traffic: 58568, pct: "%12.43" },
+      { page: "/canli-borsa", traffic: 24734, pct: "%5.25" },
+      { page: "/sermaye-artirimi", traffic: 13524, pct: "%2.87" },
+    ],
   },
   {
     name: "gcmyatirim.com.tr",
@@ -72,6 +83,15 @@ export const sites: SiteData[] = [
       { rank: 3, keyword: "çeyrek altın fiyatı", position: 3, volume: 2240000, trafficPct: "%3.73" },
       { rank: 4, keyword: "çeyrek altın ne kadar", position: 5, volume: 1830000, trafficPct: "%2.28" },
       { rank: 5, keyword: "sasa hisse", position: 9, volume: 4090000, trafficPct: "%2.21" },
+    ],
+    monthlyVisits: [
+      { month: "Oca", value: 1850 }, { month: "Şub", value: 1920 }, { month: "Mar", value: 1880 },
+      { month: "Nis", value: 1950 }, { month: "May", value: 2010 }, { month: "Haz", value: 2010 },
+    ],
+    topPages: [
+      { page: "/altin/tam-altin-fiyati", traffic: 177282, pct: "%8.82" },
+      { page: "/altin/ceyrek-altin", traffic: 96882, pct: "%4.82" },
+      { page: "/altin", traffic: 74973, pct: "%3.73" },
     ],
   },
   {
@@ -99,6 +119,15 @@ export const sites: SiteData[] = [
       { rank: 4, keyword: "tüpraş hisse", position: 3, volume: 673000, trafficPct: "%1.21" },
       { rank: 5, keyword: "hisse", position: 11, volume: 35000, trafficPct: "%2.29" },
     ],
+    monthlyVisits: [
+      { month: "Oca", value: 320 }, { month: "Şub", value: 335 }, { month: "Mar", value: 340 },
+      { month: "Nis", value: 342 }, { month: "May", value: 345 }, { month: "Haz", value: 346 },
+    ],
+    topPages: [
+      { page: "/hisse/sasa", traffic: 25568, pct: "%7.38" },
+      { page: "/endeks/bist-100", traffic: 6858, pct: "%1.98" },
+      { page: "/hisse/aselsan", traffic: 6098, pct: "%1.76" },
+    ],
   },
   {
     name: "gedik.com",
@@ -125,8 +154,24 @@ export const sites: SiteData[] = [
       { rank: 4, keyword: "faiz", position: 3, volume: 246000, trafficPct: "%1.40" },
       { rank: 5, keyword: "gedik", position: 1, volume: 9900, trafficPct: "%1.81" },
     ],
+    monthlyVisits: [
+      { month: "Oca", value: 290 }, { month: "Şub", value: 295 }, { month: "Mar", value: 300 },
+      { month: "Nis", value: 302 }, { month: "May", value: 305 }, { month: "Haz", value: 307 },
+    ],
+    topPages: [
+      { page: "/yatirim/altin/ons-altin", traffic: 42866, pct: "%13.97" },
+      { page: "/kurumsal", traffic: 6778, pct: "%2.21" },
+      { page: "/yatirim/altin", traffic: 4633, pct: "%1.51" },
+    ],
   },
 ];
+
+export const navItems = [
+  { href: "/", label: "Genel Bakış", icon: "LayoutDashboard" },
+  { href: "/traffic", label: "Trafik Analizi", icon: "BarChart3" },
+  { href: "/keywords", label: "Anahtar Kelimeler", icon: "Search" },
+  { href: "/competitors", label: "Rakip Analizi", icon: "Users" },
+] as const;
 
 export function formatNumber(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
