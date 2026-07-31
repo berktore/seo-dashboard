@@ -15,12 +15,17 @@ import {
 import {
   TrendingUp, TrendingDown, Globe, MousePointerClick, Search, Link2,
   BarChart3, Target, AlertTriangle, Sparkles, FileText, Zap,
-  Activity, CheckCircle2, LineChart as LineChartIcon,
+  Activity, CheckCircle2, LineChart as LineChartIcon, Newspaper,
 } from "lucide-react";
 import { ExecutiveSummary } from "@/components/ExecutiveSummary";
 import { PdfReport } from "@/components/PdfReport";
 import { EmailDigest } from "@/components/EmailDigest";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NewsPanel } from "@/components/NewsPanel";
+import { KeywordMovers } from "@/components/KeywordMovers";
+import { OpportunityMatrix } from "@/components/OpportunityMatrix";
+import { PageMovers } from "@/components/PageMovers";
+import { BacklinkPanel } from "@/components/BacklinkPanel";
 import { forecastChartData, getForecastInsight } from "@/lib/forecast";
 
 const info = SITES[0];
@@ -73,6 +78,7 @@ function KPIStrip({ period, isWeekly }: { period: PeriodId; isWeekly: boolean })
 
 const MAIN_TABS = [
   { id: "overview", label: "Özet", icon: BarChart3 },
+  { id: "news", label: "Haberler", icon: Newspaper },
   { id: "sites", label: "Site Analizi", icon: Globe },
   { id: "keywords", label: "Anahtar Kelimeler", icon: Search },
   { id: "market", label: "Pazar Payı", icon: Target },
@@ -407,8 +413,16 @@ export default function OverviewPage() {
                 </div>
               </div>
             )}
+
+            {/* Row 4: Page movers + backlink profile */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+              <PageMovers />
+              <BacklinkPanel />
+            </div>
           </>
         )}
+
+        {mainTab === "news" && <NewsPanel />}
 
         {mainTab === "sites" && (
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
@@ -451,7 +465,10 @@ export default function OverviewPage() {
         )}
 
         {mainTab === "keywords" && (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+          <>
+            <KeywordMovers />
+            <OpportunityMatrix />
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
             <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/60 backdrop-blur-sm p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Search size={14} className="text-blue-400" />
@@ -495,7 +512,8 @@ export default function OverviewPage() {
                 ))}
               </div>
             </div>
-          </div>
+            </div>
+          </>
         )}
 
         {mainTab === "market" && (
