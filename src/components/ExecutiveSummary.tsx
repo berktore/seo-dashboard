@@ -8,10 +8,12 @@ import { detectAnomalies } from "@/lib/anomalies";
 import { getForecastInsight } from "@/lib/forecast";
 import { usePeriod } from "@/lib/period";
 import { getPeriodData, getWeekLabel } from "@/lib/weekly-data";
-import { Sparkles, Copy, Check, RefreshCw } from "lucide-react";
+import { useGa4 } from "@/hooks/useGa4";
+import { Sparkles, Copy, Check, RefreshCw, Database } from "lucide-react";
 
 export function ExecutiveSummary() {
   const { period } = usePeriod();
+  const { data: ga, real } = useGa4(period);
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
   const [nonce, setNonce] = useState(0);
@@ -20,12 +22,13 @@ export function ExecutiveSummary() {
     const info = SITES[0];
     const wd = getPeriodData("info", period);
     const isWeekly = period !== "month";
-    const visits = wd ? wd.visits : info.visits;
-    const organic = wd ? wd.organic : info.visits;
-    const periodTotal = isWeekly
-      ? SITES.reduce((a, s) => a + (getPeriodData(s.id, period)?.visits || 0), 0)
-      : SITES.reduce((a, s) => a + s.visits, 0);
-    const marketShare = periodTotal > 0 ? ((visits / periodTotal) * 100).toFixed(1) : "0.0";
+    const visits = ga && real ? ga.sessions : wd ? wd.visits : info.visits;
+    const organic = ga && real ? ga.organicSessions : wd ? wd.organic : info.visits;
+    const marketShare = ga && real
+      ? (ga.sessions / (ga.sessions + (wd ? 0 : SITES.slice(1).reduce((a, s) => a + s.visits, 0) * 0.01))) * 100
+      : SITES.reduce((a, s) => a + (getPeriodData(s.id, period)?.visits || 0), 0) > 0
+        ? ((visits / SITES.reduce((a, s) => a + (getPeriodData(s.id, period)?.visits || 0), 0)) * 100).toFixed(1)
+        : "0.0";
     const leader = [...SITES].sort((a, b) => b.visits - a.visits)[0];
     const gainer = [...SITES].sort((a, b) => (b.organicChange || 0) - (a.organicChange || 0))[0];
     const anomalies = detectAnomalies().filter(a => a.severity === "kritik");
@@ -36,11 +39,11 @@ export function ExecutiveSummary() {
 
     return [
       `# ${isWeekly ? "Haftalık" : "Aylık"} SEO Özeti — infoyatirim.com`,
-      `*Dönem: ${periodLabel}*`,
+      `*Dönem: ${periodLabel}${ga && real ? ` · Kaynak: GA4 (${ga.rangeLabel})` : " · Kaynak: örnek veri"}*`,
       ``,
       `## Performans`,
-      `• infoyatirim.com ${formatCompact(visits)} ziyaret ile pazarın %${marketShare}'ine sahip. Lider: ${leader.name} (${leader.visitsDisplay}).`,
-      `• Organik trafik: ${formatCompact(organic)} ziyaret. Authority Score ${info.authorityScore}/100; ortalama hemen çıkma %${avgBounce}; en iyi sayfa ${topPage.path} (${formatCompact(topPage.traffic)} ziyaret).`,
+      `• infoyatirim.com ${formatCompact(visits)} ziyaret${ga && real ? ` (${formatCompact(ga.users)} kullanıcı, önceki döneme göre %${ga.sessionsDelta >= 0 ? "+" : ""}${ga.sessionsDelta})` : ""} ile pazarın %${marketShare}'ine sahip. Lider: ${leader.name} (${leader.visitsDisplay}).`,
+      `• Organik trafik: ${formatCompact(organic)} ziyaret${ga && real ? ` (toplamın %${ga.sessions > 0 ? Math.round((ga.organicSessions / ga.sessions) * 100) : 0}'i, hemen çıkma %${ga.bounceRate})` : `. Authority Score ${info.authorityScore}/100; ortalama hemen çıkma %${avgBounce}`}. En iyi sayfa ${ga && real ? (ga.topPages[0]?.path || "/") : topPage.path} (${formatCompact(ga && real ? (ga.topPages[0]?.sessions || 0) : topPage.traffic)} ziyaret).`,
       `• Organik trafik aylık %${Math.abs(info.organicChange)} değişim gösterdi. En hızlı büyüyen rakip: ${gainer.name} (%${gainer.organicChange}).`,
       `• Tahmin: ${fc.text}`,
       ``,
@@ -56,7 +59,7 @@ export function ExecutiveSummary() {
       ``,
       `*Otomatik oluşturuldu — {tarih}*`,
     ].join("\n").replace("{tarih}", new Date().toLocaleDateString("tr-TR"));
-  }, [period, nonce]);
+  }, [period, nonce, ga, real]);
 
   useEffect(() => { setText(summary); }, [summary]);
 
@@ -76,6 +79,11 @@ export function ExecutiveSummary() {
           <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Executive Summary</span>
           <Badge variant="purple">AI Özet</Badge>
           <span className="text-[10px] text-zinc-600">{period === "month" ? "Haziran 2026" : getWeekLabel(period)}</span>
+          {real && (
+            <span className="flex items-center gap-1 text-[10px] text-emerald-500 font-medium">
+              <Database size={10} /> GA4
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <button onClick={copy} className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-medium rounded-lg border border-zinc-800 text-zinc-500 hover:text-zinc-300 transition-all">
