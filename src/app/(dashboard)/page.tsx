@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { SITES } from "@/lib/data";
-import { formatNumber, formatCompact, cn, COLORS, CHANNEL_COLORS, CHANNEL_LABELS } from "@/lib/utils";
-import { Card, CardTitle } from "@/components/ui/card";
+import { formatCompact, cn, CHANNEL_COLORS, CHANNEL_LABELS } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { TimeFilter } from "@/components/TimeFilter";
 import { getPeriodData, PeriodId, getWeekLabel } from "@/lib/weekly-data";
@@ -11,13 +10,12 @@ import { detectAnomalies, getShareOfVoice } from "@/lib/anomalies";
 import { findKeywordGaps, generateContentSuggestions } from "@/lib/keyword-gaps";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell,
-  LineChart, Line, PieChart, Pie, AreaChart, Area,
+  LineChart, Line, PieChart, Pie,
 } from "recharts";
 import {
   TrendingUp, TrendingDown, Globe, MousePointerClick, Search, Link2,
-  BarChart3, Target, ExternalLink, Zap, AlertTriangle, Sparkles, FileText,
-  Activity, Users, Clock, ArrowUpRight, ArrowDownRight, ChevronRight,
-  CheckCircle2, XCircle, Eye, EyeOff, Layers, Download, Menu, LineChart as LineChartIcon, CandlestickChart,
+  BarChart3, Target, AlertTriangle, Sparkles, FileText, Zap,
+  Activity, CheckCircle2, LineChart as LineChartIcon,
 } from "lucide-react";
 import { LiveMarket } from "@/components/LiveMarket";
 import { HalkaArz } from "@/components/HalkaArz";
@@ -29,37 +27,6 @@ import { forecastChartData, getForecastInsight } from "@/lib/forecast";
 
 const info = SITES[0];
 const competitors = SITES.slice(1);
-
-function TrendTag({ val, invert }: { val: number; invert?: boolean }) {
-  const up = invert ? val < 0 : val > 0;
-  const dn = invert ? val > 0 : val < 0;
-  if (val === 0) return <span className="text-[11px] text-zinc-600">▸ %0</span>;
-  return (
-    <span className={cn("text-[11px] flex items-center gap-0.5", up ? "text-emerald-400" : "text-red-400")}>
-      {up ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-      %{Math.abs(val)}
-    </span>
-  );
-}
-
-function MiniSparkline({ data, color }: { data: number[]; color: string }) {
-  const chartData = data.map((v, i) => ({ i, v }));
-  return (
-    <div className="w-20 h-8">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData}>
-          <defs>
-            <linearGradient id={`sg-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.3} />
-              <stop offset="100%" stopColor={color} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <Area type="monotone" dataKey="v" stroke={color} strokeWidth={1.5} fill={`url(#sg-${color.replace("#", "")})`} dot={false} />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
 
 function KPIStrip({ period, isWeekly }: { period: PeriodId; isWeekly: boolean }) {
   const kpis = useMemo(() => {
@@ -114,7 +81,6 @@ const MAIN_TABS = [
   { id: "anomalies", label: "Anomaliler", icon: AlertTriangle },
   { id: "goals", label: "Hedefler", icon: Target },
   { id: "suggestions", label: "Öneriler", icon: Sparkles },
-  { id: "live", label: "Canlı Piyasa", icon: CandlestickChart },
 ];
 
 export default function OverviewPage() {
@@ -129,8 +95,6 @@ export default function OverviewPage() {
   const [editingGoal, setEditingGoal] = useState<string | null>(null);
 
   const isWeekly = period !== "month";
-  const sitesToShow = selectedSite === "all" ? SITES : SITES.filter(s => s.id === selectedSite);
-  const site = SITES.find(s => s.id === selectedSite) || info;
 
   useEffect(() => {
     setAnomalies(detectAnomalies());
@@ -145,15 +109,25 @@ export default function OverviewPage() {
 
   const periodLabel = isWeekly ? `Haftalık · ${getWeekLabel(period)}` : "Aylık · Haziran 2026";
 
-  const trafficData = (isWeekly ? SITES.map((s) => {
-    const wd = getPeriodData(s.id, period);
-    return { name: s.id.toUpperCase(), label: s.name, visits: wd ? Math.round(wd.visits / 1000) : Math.round(s.visits / 1000), fill: s.color };
-  }) : SITES.map((s) => ({ name: s.id.toUpperCase(), label: s.name, visits: Math.round(s.visits / 1000), fill: s.color })));
+  const trafficData = useMemo(() => (
+    isWeekly ? SITES.map((s) => {
+      const wd = getPeriodData(s.id, period);
+      return { name: s.id.toUpperCase(), label: s.name, visits: wd ? Math.round(wd.visits / 1000) : Math.round(s.visits / 1000), fill: s.color };
+    }) : SITES.map((s) => ({ name: s.id.toUpperCase(), label: s.name, visits: Math.round(s.visits / 1000), fill: s.color }))
+  ), [period, isWeekly]);
 
-  const trendData = SITES[0].monthlyVisits.map((m, i) => ({
-    month: m.month,
-    ...Object.fromEntries(SITES.map(s => [s.id, s.monthlyVisits[i].value])),
-  }));
+  const trendData = useMemo(() => (
+    SITES[0].monthlyVisits.map((m, i) => ({
+      month: m.month,
+      ...Object.fromEntries(SITES.map(s => [s.id, s.monthlyVisits[i].value])),
+    }))
+  ), []);
+
+  const forecast = useMemo(() => {
+    const data = forecastChartData();
+    const fcMonths = data.filter(f => f.isForecast);
+    return { data, fcMonths, insight: getForecastInsight("info").text };
+  }, []);
 
   const shareTrend = useMemo(() => {
     const months = ["Oca", "Şub", "Mar", "Nis", "May", "Haz"];
@@ -183,27 +157,14 @@ export default function OverviewPage() {
     <div className="min-h-screen bg-black">
       {/* Header */}
       <div className="sticky top-0 z-30 border-b border-zinc-800/60 bg-black/80 backdrop-blur-xl">
-        <div className="flex items-center justify-between px-6 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 md:px-6 py-3">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center text-xs font-bold text-black">IY</div>
               <div>
                 <div className="text-sm font-bold text-white">infoyatirim.com</div>
-                <div className="text-[10px] text-zinc-600">SEO Analiz Paneli</div>
+                <div className="text-[10px] text-zinc-600 hidden sm:block">SEO Analiz Paneli</div>
               </div>
-            </div>
-            <div className="hidden md:flex items-center gap-1.5 ml-4 pl-4 border-l border-zinc-800">
-              {MAIN_TABS.map(t => (
-                <button key={t.id} onClick={() => setMainTab(t.id)}
-                  className={cn(
-                    "flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium rounded-lg transition-all",
-                    mainTab === t.id ? "bg-zinc-800 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
-                  )}
-                >
-                  <t.icon size={13} />
-                  {t.label}
-                </button>
-              ))}
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -213,14 +174,35 @@ export default function OverviewPage() {
             <TimeFilter selected={period} onChange={setPeriod} />
           </div>
         </div>
+        <div className="flex items-center gap-1 px-4 md:px-6 pb-2 overflow-x-auto no-scrollbar">
+          {MAIN_TABS.map(t => (
+            <button key={t.id} onClick={() => setMainTab(t.id)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-medium rounded-lg transition-all whitespace-nowrap",
+                mainTab === t.id ? "bg-zinc-800 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"
+              )}
+            >
+              <t.icon size={13} />
+              {t.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="p-6 space-y-5">
+      <div className="p-4 md:p-6 space-y-5">
         {/* Executive Summary */}
         {mainTab === "overview" && <ExecutiveSummary />}
 
         {/* KPI Strip */}
         <KPIStrip period={period} isWeekly={isWeekly} />
+
+        {/* Canlı Piyasa + Halka Arz */}
+        {mainTab === "overview" && (
+          <>
+            <LiveMarket />
+            <HalkaArz />
+          </>
+        )}
 
         {/* Main Content */}
         {mainTab === "overview" && (
@@ -236,7 +218,7 @@ export default function OverviewPage() {
                   <span className="text-[10px] text-zinc-600">Kesikli çizgi = 3 aylık projeksiyon</span>
                 </div>
                 <ResponsiveContainer width="100%" height={220}>
-                  <LineChart data={forecastChartData()}>
+                  <LineChart data={forecast.data}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
                     <XAxis dataKey="month" tick={{ fill: "#a1a1aa", fontSize: 11 }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: "#a1a1aa", fontSize: 11 }} axisLine={false} tickLine={false} unit="K" />
@@ -255,10 +237,10 @@ export default function OverviewPage() {
                   <Zap size={14} className="text-amber-400" />
                   <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Tahmin Yorumu</span>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed mb-4">{getForecastInsight("info").text}</p>
+                <p className="text-xs text-zinc-400 leading-relaxed mb-4">{forecast.insight}</p>
                 <div className="space-y-2">
                   {["Tem", "Ağu", "Eyl"].map((m, i) => {
-                    const p: any = forecastChartData().filter(f => f.isForecast)[i];
+                    const p: any = forecast.fcMonths[i];
                     return (
                       <div key={m} className="flex items-center justify-between bg-zinc-800/30 rounded-lg px-3 py-2">
                         <span className="text-xs text-zinc-400">{m} 2026</span>
@@ -435,13 +417,6 @@ export default function OverviewPage() {
                 </div>
               </div>
             )}
-          </>
-        )}
-
-        {mainTab === "live" && (
-          <>
-            <LiveMarket />
-            <HalkaArz />
           </>
         )}
 

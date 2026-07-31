@@ -36,7 +36,8 @@ html.light body {
 }
 
 html.light .bg-zinc-950,
-html.light .bg-black { background-color: #f4f4f5 !important; }
+html.light .bg-black,
+html.light .bg-black\/80 { background-color: #f4f4f5 !important; }
 
 html.light .bg-zinc-900\/60,
 html.light .bg-zinc-900\/80,
@@ -70,6 +71,9 @@ html.light .text-white { color: #18181b !important; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
 @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slide-in { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
