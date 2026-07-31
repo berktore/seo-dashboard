@@ -6,7 +6,6 @@ import { formatCompact } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { detectAnomalies } from "@/lib/anomalies";
 import { getForecastInsight } from "@/lib/forecast";
-import { marketSummary } from "@/lib/market-data";
 import { Sparkles, Copy, Check, RefreshCw } from "lucide-react";
 
 export function ExecutiveSummary() {
@@ -25,9 +24,6 @@ export function ExecutiveSummary() {
     return [
       `# Haftalık SEO Özeti — infoyatirim.com`,
       ``,
-      `## Piyasa`,
-      marketSummary(),
-      ``,
       `## Performans`,
       `• infoyatirim.com ${info.visitsDisplay} ziyaret ile pazarın %${((info.visits / SITES.reduce((a, s) => a + s.visits, 0)) * 100).toFixed(1)}'ine sahip. Lider: ${leader.name} (${leader.visitsDisplay}).`,
       `• Authority Score ${info.authorityScore}/100; ortalama hemen çıkma %${avgBounce}; en iyi sayfa ${topPage.path} (${formatCompact(topPage.traffic)} ziyaret).`,
@@ -40,9 +36,9 @@ export function ExecutiveSummary() {
         : "• Kritik anomali yok. Veriler düzenli.",
       ``,
       `## Öncelikli Aksiyonlar`,
-      `1. Halka arz takvimini takip et (Kardemir, Albayrak Hazır Beton, Masfen Enerji) — içerik fırsatı.`,
-      `2. Hemen çıkma oranı %65 üzeri sayfaları iyileştir (iç bağlantı + CTA).`,
-      `3. Rakiplerin sıraladığı boşluktaki kelimelere içerik üret.`,
+      `1. Hemen çıkma oranı %65 üzeri sayfaları iyileştir (iç bağlantı + CTA).`,
+      `2. Rakiplerin sıraladığı boşluktaki kelimelere içerik üret.`,
+      `3. Backlink profiline odaklan — yetkili finans sitelerinden bağlantılar al.`,
       ``,
       `*Otomatik oluşturuldu — {tarih}*`,
     ].join("\n").replace("{tarih}", new Date().toLocaleDateString("tr-TR"));

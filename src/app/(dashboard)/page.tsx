@@ -17,8 +17,6 @@ import {
   BarChart3, Target, AlertTriangle, Sparkles, FileText, Zap,
   Activity, CheckCircle2, LineChart as LineChartIcon,
 } from "lucide-react";
-import { LiveMarket } from "@/components/LiveMarket";
-import { HalkaArz } from "@/components/HalkaArz";
 import { ExecutiveSummary } from "@/components/ExecutiveSummary";
 import { PdfReport } from "@/components/PdfReport";
 import { EmailDigest } from "@/components/EmailDigest";
@@ -195,14 +193,6 @@ export default function OverviewPage() {
 
         {/* KPI Strip */}
         <KPIStrip period={period} isWeekly={isWeekly} />
-
-        {/* Canlı Piyasa + Halka Arz */}
-        {mainTab === "overview" && (
-          <>
-            <LiveMarket />
-            <HalkaArz />
-          </>
-        )}
 
         {/* Main Content */}
         {mainTab === "overview" && (

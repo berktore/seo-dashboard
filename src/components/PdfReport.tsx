@@ -4,7 +4,6 @@ import { useState } from "react";
 import { SITES } from "@/lib/data";
 import { detectAnomalies, getShareOfVoice } from "@/lib/anomalies";
 import { forecastSite } from "@/lib/forecast";
-import { MARKET_QUOTES } from "@/lib/market-data";
 import { FileDown, Loader2 } from "lucide-react";
 
 function esc(s: string): string {
@@ -41,14 +40,6 @@ export function PdfReport() {
 
     const fcRows = fc.map(f => `<tr><td>${f.month}</td><td>${f.actual ? f.actual.toLocaleString("tr-TR") + "K" : "-"}</td><td>${f.forecast ? f.forecast.toLocaleString("tr-TR") + "K" : "-"}</td><td>${f.isForecast ? "Tahmin" : "Gerçek"}</td></tr>`).join("");
 
-    const marketRows = MARKET_QUOTES.map(q => `
-      <tr>
-        <td><b>${q.symbol}</b></td>
-        <td>${esc(q.name)}</td>
-        <td>${q.price.toLocaleString("tr-TR")}</td>
-        <td style="color:${q.changePct >= 0 ? "#059669" : "#dc2626"}">%${q.changePct}</td>
-      </tr>`).join("");
-
     return `<!DOCTYPE html>
 <html lang="tr"><head><meta charset="utf-8">
 <title>SEO Raporu - infoyatirim.com</title>
@@ -65,7 +56,7 @@ export function PdfReport() {
   .footer { margin-top: 32px; color: #9ca3af; font-size: 10px; border-top: 1px solid #e5e7eb; padding-top: 12px; }
 </style></head><body>
 <h1>SEO Performans Raporu — infoyatirim.com</h1>
-<p class="meta">Rapor tarihi: ${date} · Kaynak: Semrush, Haziran 2026 & BIST canlı veri</p>
+<p class="meta">Rapor tarihi: ${date} · Kaynak: Semrush, Haziran 2026</p>
 
 <h2>1. Pazar Özeti</h2>
 <table>
@@ -81,9 +72,6 @@ ${rows}
 
 <h2>4. Anomali Tespiti</h2>
 <ul>${anomalyRows}</ul>
-
-<h2>5. Canlı Piyasa (${date})</h2>
-<table><tr><th>Kod</th><th>Ad</th><th>Fiyat</th><th>Δ</th></tr>${marketRows}</table>
 
 <div class="footer">Bu rapor otomatik üretilmiştir. Yatırım tavsiyesi değildir. © infoyatirim-dashboard</div>
 </body></html>`;
