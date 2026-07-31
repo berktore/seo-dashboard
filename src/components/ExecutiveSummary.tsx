@@ -1,32 +1,46 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { SITES } from "@/lib/data";
 import { formatCompact } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { detectAnomalies } from "@/lib/anomalies";
 import { getForecastInsight } from "@/lib/forecast";
+import { usePeriod } from "@/lib/period";
+import { getPeriodData, getWeekLabel } from "@/lib/weekly-data";
 import { Sparkles, Copy, Check, RefreshCw } from "lucide-react";
 
 export function ExecutiveSummary() {
+  const { period } = usePeriod();
   const [text, setText] = useState("");
   const [copied, setCopied] = useState(false);
+  const [nonce, setNonce] = useState(0);
 
   const summary = useMemo(() => {
     const info = SITES[0];
+    const wd = getPeriodData("info", period);
+    const isWeekly = period !== "month";
+    const visits = wd ? wd.visits : info.visits;
+    const organic = wd ? wd.organic : info.visits;
+    const periodTotal = isWeekly
+      ? SITES.reduce((a, s) => a + (getPeriodData(s.id, period)?.visits || 0), 0)
+      : SITES.reduce((a, s) => a + s.visits, 0);
+    const marketShare = periodTotal > 0 ? ((visits / periodTotal) * 100).toFixed(1) : "0.0";
     const leader = [...SITES].sort((a, b) => b.visits - a.visits)[0];
     const gainer = [...SITES].sort((a, b) => (b.organicChange || 0) - (a.organicChange || 0))[0];
     const anomalies = detectAnomalies().filter(a => a.severity === "kritik");
     const fc = getForecastInsight("info");
     const topPage = [...info.pageDetails].sort((a, b) => b.traffic - a.traffic)[0];
     const avgBounce = Math.round(info.pageDetails.reduce((a, p) => a + p.bounceRate, 0) / info.pageDetails.length);
+    const periodLabel = isWeekly ? getWeekLabel(period) : "Haziran 2026";
 
     return [
-      `# Haftalık SEO Özeti — infoyatirim.com`,
+      `# ${isWeekly ? "Haftalık" : "Aylık"} SEO Özeti — infoyatirim.com`,
+      `*Dönem: ${periodLabel}*`,
       ``,
       `## Performans`,
-      `• infoyatirim.com ${info.visitsDisplay} ziyaret ile pazarın %${((info.visits / SITES.reduce((a, s) => a + s.visits, 0)) * 100).toFixed(1)}'ine sahip. Lider: ${leader.name} (${leader.visitsDisplay}).`,
-      `• Authority Score ${info.authorityScore}/100; ortalama hemen çıkma %${avgBounce}; en iyi sayfa ${topPage.path} (${formatCompact(topPage.traffic)} ziyaret).`,
+      `• infoyatirim.com ${formatCompact(visits)} ziyaret ile pazarın %${marketShare}'ine sahip. Lider: ${leader.name} (${leader.visitsDisplay}).`,
+      `• Organik trafik: ${formatCompact(organic)} ziyaret. Authority Score ${info.authorityScore}/100; ortalama hemen çıkma %${avgBounce}; en iyi sayfa ${topPage.path} (${formatCompact(topPage.traffic)} ziyaret).`,
       `• Organik trafik aylık %${Math.abs(info.organicChange)} değişim gösterdi. En hızlı büyüyen rakip: ${gainer.name} (%${gainer.organicChange}).`,
       `• Tahmin: ${fc.text}`,
       ``,
@@ -42,13 +56,15 @@ export function ExecutiveSummary() {
       ``,
       `*Otomatik oluşturuldu — {tarih}*`,
     ].join("\n").replace("{tarih}", new Date().toLocaleDateString("tr-TR"));
-  }, []);
+  }, [period, nonce]);
 
   useEffect(() => { setText(summary); }, [summary]);
 
   const copy = async () => {
     try { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch { }
   };
+
+  const regenerate = useCallback(() => setNonce(n => n + 1), []);
 
   return (
     <div className="rounded-xl border border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-zinc-900/60 backdrop-blur-sm p-5">
@@ -59,13 +75,14 @@ export function ExecutiveSummary() {
           </div>
           <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Executive Summary</span>
           <Badge variant="purple">AI Özet</Badge>
+          <span className="text-[10px] text-zinc-600">{period === "month" ? "Haziran 2026" : getWeekLabel(period)}</span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={copy} className="flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-medium rounded-lg border border-zinc-800 text-zinc-500 hover:text-zinc-300 transition-all">
             {copied ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
             {copied ? "Kopyalandı" : "Kopyala"}
           </button>
-          <button onClick={() => window.location.reload()} className="p-1.5 rounded-lg border border-zinc-800 text-zinc-500 hover:text-zinc-300 transition-all">
+          <button onClick={regenerate} className="p-1.5 rounded-lg border border-zinc-800 text-zinc-500 hover:text-zinc-300 transition-all" title="Özeti yeniden oluştur">
             <RefreshCw size={11} />
           </button>
         </div>
