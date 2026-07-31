@@ -17,8 +17,15 @@ import {
   TrendingUp, TrendingDown, Globe, MousePointerClick, Search, Link2,
   BarChart3, Target, ExternalLink, Zap, AlertTriangle, Sparkles, FileText,
   Activity, Users, Clock, ArrowUpRight, ArrowDownRight, ChevronRight,
-  CheckCircle2, XCircle, Eye, EyeOff, Layers, Download, Menu,
+  CheckCircle2, XCircle, Eye, EyeOff, Layers, Download, Menu, LineChart as LineChartIcon, CandlestickChart,
 } from "lucide-react";
+import { LiveMarket } from "@/components/LiveMarket";
+import { HalkaArz } from "@/components/HalkaArz";
+import { ExecutiveSummary } from "@/components/ExecutiveSummary";
+import { PdfReport } from "@/components/PdfReport";
+import { EmailDigest } from "@/components/EmailDigest";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { forecastChartData, getForecastInsight } from "@/lib/forecast";
 
 const info = SITES[0];
 const competitors = SITES.slice(1);
@@ -107,6 +114,7 @@ const MAIN_TABS = [
   { id: "anomalies", label: "Anomaliler", icon: AlertTriangle },
   { id: "goals", label: "Hedefler", icon: Target },
   { id: "suggestions", label: "Öneriler", icon: Sparkles },
+  { id: "live", label: "Canlı Piyasa", icon: CandlestickChart },
 ];
 
 export default function OverviewPage() {
@@ -199,18 +207,69 @@ export default function OverviewPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <EmailDigest />
+            <PdfReport />
+            <ThemeToggle />
             <TimeFilter selected={period} onChange={setPeriod} />
           </div>
         </div>
       </div>
 
       <div className="p-6 space-y-5">
+        {/* Executive Summary */}
+        {mainTab === "overview" && <ExecutiveSummary />}
+
         {/* KPI Strip */}
         <KPIStrip period={period} isWeekly={isWeekly} />
 
         {/* Main Content */}
         {mainTab === "overview" && (
           <>
+            {/* Forecast row */}
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
+              <div className="xl:col-span-2 rounded-xl border border-zinc-800/60 bg-zinc-900/60 backdrop-blur-sm p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <LineChartIcon size={14} className="text-amber-400" />
+                    <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Trafik Tahmini · infoyatirim.com</span>
+                  </div>
+                  <span className="text-[10px] text-zinc-600">Kesikli çizgi = 3 aylık projeksiyon</span>
+                </div>
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={forecastChartData()}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                    <XAxis dataKey="month" tick={{ fill: "#a1a1aa", fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: "#a1a1aa", fontSize: 11 }} axisLine={false} tickLine={false} unit="K" />
+                    <Tooltip contentStyle={{ background: "#18181b", border: "1px solid #27272a", borderRadius: 8, color: "#f4f4f5", fontSize: 12 }} />
+                    <Line type="monotone" dataKey="info" stroke="#f59e0b" strokeWidth={2.5} dot={false} name="Gerçek" />
+                    <Line type="monotone" dataKey="infoFc" stroke="#f59e0b" strokeWidth={2.5} strokeDasharray="6 4" dot={false} name="Tahmin" />
+                    {["gcm", "midas", "isy"].map(id => {
+                      const s = SITES.find(x => x.id === id)!;
+                      return <Line key={id} type="monotone" dataKey={id} stroke={s.color} strokeWidth={1} dot={false} strokeOpacity={0.35} name={s.name} />;
+                    })}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/60 backdrop-blur-sm p-5 flex flex-col justify-center">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap size={14} className="text-amber-400" />
+                  <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Tahmin Yorumu</span>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed mb-4">{getForecastInsight("info").text}</p>
+                <div className="space-y-2">
+                  {["Tem", "Ağu", "Eyl"].map((m, i) => {
+                    const p: any = forecastChartData().filter(f => f.isForecast)[i];
+                    return (
+                      <div key={m} className="flex items-center justify-between bg-zinc-800/30 rounded-lg px-3 py-2">
+                        <span className="text-xs text-zinc-400">{m} 2026</span>
+                        <span className="text-xs font-bold text-white">{p?.infoFc}K</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
             {/* Row 1: Dominant chart + site selector */}
             <div className="grid grid-cols-1 xl:grid-cols-4 gap-5">
               <div className="xl:col-span-3 rounded-xl border border-zinc-800/60 bg-zinc-900/60 backdrop-blur-sm p-5">
@@ -376,6 +435,13 @@ export default function OverviewPage() {
                 </div>
               </div>
             )}
+          </>
+        )}
+
+        {mainTab === "live" && (
+          <>
+            <LiveMarket />
+            <HalkaArz />
           </>
         )}
 
