@@ -20,10 +20,15 @@ export async function semrushRequest(type: string, params: Record<string, string
   try {
     json = JSON.parse(text);
   } catch {
-    throw new Error("Semrush yanıtı JSON değil");
+    throw new Error(`Semrush yanıtı JSON değil (type=${type}): ${text.slice(0, 200)}`);
   }
-  const arr = Array.isArray(json) ? json : [];
-  return arr.map((r: Record<string, unknown>) => {
+  if (!Array.isArray(json)) {
+    const rec = (json || {}) as Record<string, unknown>;
+    const errCode = rec.error ?? rec.error_code;
+    const msg = rec.message ?? rec.message_text ?? JSON.stringify(rec).slice(0, 200);
+    throw new Error(`Semrush hata (type=${type})${errCode ? ` [${errCode}]` : ""}: ${msg}`);
+  }
+  return json.map((r: Record<string, unknown>) => {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(r)) out[normalizeKey(k)] = v;
     return out;
@@ -65,6 +70,7 @@ export interface SemrushOverview {
   domain: string;
   database: string;
   rank: number;
+  organicKeywords: number;
   organicTraffic: number;
   topKeywords: SemrushKeyword[];
   endpointsOk: string[];
@@ -74,51 +80,56 @@ export interface SemrushOverview {
 export async function fetchSemrushOverview(database: string = TR): Promise<SemrushOverview> {
   const endpointsOk: string[] = [];
   let rank = 0;
+  let organicKeywords = 0;
+  let organicTraffic = 0;
   let topKeywords: SemrushKeyword[] = [];
+
+  // domain_overview: tek veritabanında özet (Rk=rank, Or=organik kelime, Ot=organik trafik)
+  try {
+    const rows = await semrushRequest("domain_overview", {
+      domain: DOMAIN,
+      database,
+      display_limit: "1",
+      export_columns: "Rk,Or,Ot",
+    });
+    if (rows.length > 0) endpointsOk.push("domain_overview");
+    const row = rows[0] || {};
+    rank = pickNum(row, ["rk", "rank"]);
+    organicKeywords = pickNum(row, ["or", "organickeywords"]);
+    organicTraffic = pickNum(row, ["ot", "organictraffic"]);
+  } catch (e) {
+    console.error("domain_overview hatası:", e instanceof Error ? e.message : e);
+  }
 
   try {
     const rows = await semrushRequest("domain_organic", {
       domain: DOMAIN,
       database,
       display_limit: "12",
-      export_columns: "Ph,Po,Nq,Vu,Tr,Ur",
+      export_columns: "Ph,Po,Nq,Ur,Tg",
     });
     if (rows.length > 0) endpointsOk.push("domain_organic");
-    topKeywords = rows.map(r => ({
+    const kws = rows.map(r => ({
       keyword: pickText(r, ["ph", "keyword"]),
       position: pickNum(r, ["po", "position", "pos"]),
       volume: pickNum(r, ["nq", "volume", "searchvolume", "kwvolume"]),
-      traffic: pickNum(r, ["vu", "traffic", "tr"]),
+      traffic: pickNum(r, ["tg", "traffic"]),
       url: pickText(r, ["ur", "url"]),
-    })).filter(k => k.keyword).map((k, i) => ({ ...k, position: k.position || i + 1 }));
-  } catch { /* opsiyonel */ }
-
-  try {
-    const rows = await semrushRequest("domain_rank", { domain: DOMAIN, database });
-    if (rows.length > 0) endpointsOk.push("domain_rank");
-    rank = pickNum(rows[0] || {}, ["rank", "organicrank", "rk"]);
-  } catch {
-    // domain_ranks (tüm DB) denemesi
-    try {
-      const rows = await semrushRequest("domain_ranks", { domain: DOMAIN });
-      const hit = rows.find(r => {
-        const db = pickText(r, ["database", "databasecode"]);
-        return db.toLowerCase().startsWith(database) || db === "tr";
-      }) || rows[0];
-      if (hit) {
-        endpointsOk.push("domain_ranks");
-        rank = pickNum(hit, ["rank", "organicrank", "rk"]);
-      }
-    } catch { /* opsiyonel */ }
+    })).filter(k => k.keyword);
+    if (kws.length > 0) {
+      topKeywords = kws.map((k, i) => ({ ...k, position: k.position || i + 1 }));
+      if (!organicTraffic) organicTraffic = topKeywords.reduce((a, k) => a + k.traffic, 0);
+    }
+  } catch (e) {
+    console.error("domain_organic hatası:", e instanceof Error ? e.message : e);
   }
-
-  const organicTraffic = topKeywords.reduce((a, k) => a + k.traffic, 0);
 
   return {
     real: Boolean(endpointsOk.length),
     domain: DOMAIN,
     database,
     rank,
+    organicKeywords,
     organicTraffic,
     topKeywords,
     endpointsOk,
