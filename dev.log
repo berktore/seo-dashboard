@@ -1,0 +1,11 @@
+
+> infoyatirim-dashboard@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.12 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.246.219.12:3000
+✓ Ready in 607ms
+
+ GET /api/ga4?period=week4 200 in 3.9s (next.js: 3.8s, application-code: 69ms)
+ GET / 200 in 3.3s (next.js: 3.0s, application-code: 322ms)
